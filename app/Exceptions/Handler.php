@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that are not reported.
+     * A list of the throwable types that are not reported.
      *
      * @var array
      */
@@ -30,60 +30,60 @@ class Handler extends ExceptionHandler
     ];
     
     /**
-     * Report or log an exception.
-     * @param Exception $exception
+     * Report or log an throwable.
+     * @param Throwable $throwable
      *
      * @return mixed|void
-     * @throws Exception
+     * @throws Throwable
      */
-    public function report(Exception $exception)
+    public function report(Throwable $throwable)
     {
-        parent::report($exception);
+        parent::report($throwable);
     }
 
     /**
-     * Render an exception into an HTTP response.
+     * Render an throwable into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Throwable  $throwable
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $throwable)
     {
-        if ( $this->isModelExp( $exception ) ) {
+        if ( $this->isModelExp( $throwable ) ) {
             return response()->json([
                 'error' => 'Invalid Parameter Value in the Request.'
             ], Response::HTTP_NOT_FOUND );
         }
     
-        if ( $this->isHttpExp( $exception ) ) {
+        if ( $this->isHttpExp( $throwable ) ) {
             return response()->json([
                 'error' => 'Invalid Route or Parameter in the Request.'
             ], Response::HTTP_BAD_REQUEST );
         }
         
-        return parent::render($request, $exception);
+        return parent::render($request, $throwable);
     }
     
     /**
-     * if its a model not found exception
-     * @param $exception
+     * if its a model not found throwable
+     * @param $throwable
      *
      * @return bool
      */
-    public function isModelExp( $exception )
+    public function isModelExp( $throwable )
     {
-        return $exception instanceof ModelNotFoundException;
+        return $throwable instanceof ModelNotFoundException;
     }
     
     /**
-     * if its an http not found exception
-     * @param $exception
+     * if its an http not found throwable
+     * @param $throwable
      *
      * @return bool
      */
-    public function isHttpExp( $exception )
+    public function isHttpExp( $throwable )
     {
-        return $exception instanceof NotFoundHttpException;
+        return $throwable instanceof NotFoundHttpException;
     }
 }
