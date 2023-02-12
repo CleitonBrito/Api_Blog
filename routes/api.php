@@ -2,17 +2,11 @@
 
 use Illuminate\Http\Request;
 
-Route::group(['prefix' => 'v1'], function () {
-    Route::middleware('auth:api')->get('/user', function (Request $request) {
-        return $request->user();
-    });
-});
+Route::post('v1/login', 'api\v1\AuthController@login');
 
-/**
- * group api v1 routes under
- * Api\v1 directory in controllers
- */
-Route::group(['prefix' => 'v1', 'namespace' => 'Api\v1'], function () {
+Route::group(['prefix' => 'v1', 'namespace' => 'Api\v1', 'middleware' => 'apiJwt'], function () {
+    Route::post('logout', 'AuthController@logout');
+
     Route::apiResource('/posts', 'PostController');
     Route::group(['prefix' => 'posts' ], function () {
         Route::apiResource('{post}/comments', 'CommentController');
