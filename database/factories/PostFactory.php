@@ -1,18 +1,32 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\Post;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
-$factory->define(Post::class, function (Faker $faker) {
-    return [
-        'user_id' => function() {
-            return User::all()->random();
-        },
-        'title' => $faker->sentence,
-        'slug' => $faker->slug,
-        'content' => $faker->paragraph,
-    ];
-});
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ */
+class PostFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => function (){
+                if(!empty(\App\Models\User::all()))
+                    return \App\Models\User::all()->random();
+                else
+                    return null;
+            },
+            'title' => fake()->sentence,
+            'slug' => fake()->slug,
+            'content' => fake()->paragraph,
+        ];
+    }
+}
