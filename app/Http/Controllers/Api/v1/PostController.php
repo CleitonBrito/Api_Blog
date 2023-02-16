@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\v1;
 
 use Auth;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
@@ -35,7 +34,7 @@ class PostController extends Controller
         return response()->json(new PostCollection($output));
     }
 
-    public function store(PostRepositoryInterface $model, Request $request){
+    public function store(PostRepositoryInterface $model, PostRequest $request){
         $data = [
             'user_id'=> Auth::id(),
             'title' => $request->title,
