@@ -21,22 +21,22 @@ class CommentController extends Controller
         return $this->middleware('apiJwt');
     }
 
-    public function index(CommentRepositoryInterface $model, $posts_id){
-        $output = $model->findAllCommentsBlongsToPost($posts_id);
+    public function index(CommentRepositoryInterface $model, Request $request){
+        $output = $model->findAllCommentsBlongsToPost($request->post_id);
         return response()->json($output);
     }
 
-    public function addOneVote(CommentRepositoryInterface $model, $post_id, $comment_id){
+    public function addOneVote(CommentRepositoryInterface $model, $comment_id){
         return response()->json($model->addOneVote($comment_id));
     }
 
-    public function subtractOneVote(CommentRepositoryInterface $model, $post_id, $comment_id){
+    public function subtractOneVote(CommentRepositoryInterface $model, $comment_id){
         return response()->json($model->subtractOneVote($comment_id));
     }
     
-    public function store(CommentRepositoryInterface $model, CommentRequest $request, $post_id){
+    public function store(CommentRepositoryInterface $model, CommentRequest $request){
         $data = [
-            'post_id' => $post_id,
+            'post_id' => $request->post_id,
             'author_id' => Auth::id(),
             'comment' => $request->comment,
         ];
@@ -46,12 +46,13 @@ class CommentController extends Controller
         return response()->json($output);
     }
     
-    public function show(){
-        
+    public function show(CommentRepositoryInterface $model, $comment_id){
+        $output = $model->get($comment_id);
+        return response()->json($output);
     }
 
-    public function update(CommentRepositoryInterface $model, CommentRequest $request, $post_id, $comment_id){
-        $output =  $model->get($comment_id);
+    public function update(CommentRepositoryInterface $model, Request $request, $comment_id){
+        $output = $model->get($comment_id);
         $model->isUserComment($output);
         $data = [
             'id' => $comment_id,
@@ -61,7 +62,9 @@ class CommentController extends Controller
     }
 
     
-    public function destroy(){
-        
+    public function destroy(CommentRepositoryInterface $model, $comment_id){
+        $output = $model->get($comment_id);
+        $model->isUserComment($output);
+        return response()->json($model->destroy($comment_id));
     }
 }

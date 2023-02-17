@@ -24,6 +24,7 @@ class CommentRequest extends FormRequest
     public function rules()
     {
         return [
+            'post_id' => 'required',
             'comment' => 'required|max:500',
         ];
     }
@@ -31,6 +32,7 @@ class CommentRequest extends FormRequest
     public function messages()
     {
         return [
+            'post_id.required' => 'Post id is required',
             'comment.required' => 'Comment Content is required',
         ];
     }

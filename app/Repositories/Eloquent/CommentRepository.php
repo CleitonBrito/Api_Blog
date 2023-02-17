@@ -13,7 +13,10 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
     protected $model = Comment::class;
 
     public function findAllCommentsBlongsToPost($post_id){
-        return DB::select('select * from comments where post_id = ?', [$post_id]);
+        if($post_id !== null)
+            return DB::select('select * from comments where post_id = ?', [$post_id]);
+        else
+            return ['error' => 'Param post_id not found in request.'];
     }
 
     public function addOneVote($id){
