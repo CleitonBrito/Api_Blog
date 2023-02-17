@@ -24,7 +24,13 @@ class CommentFactory extends Factory
                     return null;
                 }
             },
-            'author' => fake()->name,
+            'author_id' => function() {
+                if(!empty(\App\Models\User::all())){
+                    return \App\Models\User::all()->random();
+                }else{
+                    return null;
+                }
+            },
             'comment' => fake()->sentence,
             'vote' => fake()->numberBetween(0,1)
         ];
