@@ -18,7 +18,6 @@ class CreateCommentsTable extends Migration
             $table->bigInteger('post_id')->unsigned();
             $table->bigInteger('author_id')->unsigned();
             $table->text('comment');
-            $table->tinyInteger('vote')->default(0);
             $table->timestamps();
             
             $table->foreign('post_id')
