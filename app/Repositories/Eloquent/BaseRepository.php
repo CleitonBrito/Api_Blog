@@ -14,14 +14,10 @@ abstract class BaseRepository {
         return app($this->model);
     }
 
-    public function all(){
-        return $this->model->all();
-    }
-
     public function store($input){
         try{
             $this->model->create($input);
-            return class_basename($this->model)." cadastrado com sucesso!";
+            return class_basename($this->model)." saved successfully!";
         }catch(\Exception $e){
             return ['error_code' => $e->getCode()];
         }
@@ -40,7 +36,7 @@ abstract class BaseRepository {
         try{
             $input = array_filter($input);
             $this->model->where('id', $input['id'])->update($input);
-            return class_basename($this->model)." atualizado com sucesso!";
+            return class_basename($this->model)." successfully updated!";
         }catch(\Exception $e){
             return ['error_code' => $e->getCode()];
         }
@@ -49,7 +45,7 @@ abstract class BaseRepository {
     public function destroy($input){
         try{
             $this->model->destroy($input);
-            return class_basename($this->model). " deletado com sucesso!";
+            return class_basename($this->model). " successfully deleted!";
         }catch(\Exception $e){
             return ['error_code' => $e->getCode()];
         }
