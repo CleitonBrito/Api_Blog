@@ -3,33 +3,25 @@
 namespace App\Http\Controllers\Api\v1;
 
 use Auth;
+use Illuminate\Support\Str;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Response;
-// resources
+
 use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\Post\PostCollection;
-
-use Illuminate\Support\Str;
-
 use App\Repositories\Contracts\PostRepositoryInterface;
-use App\Repositories\Eloquent\PostRepository;
+
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(){
         return $this->middleware('apiJwt');
     }
     
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(PostRepositoryInterface $model)
-    {
+    public function index(PostRepositoryInterface $model){
         $output = $model->all();
         return response()->json(new PostCollection($output));
     }
