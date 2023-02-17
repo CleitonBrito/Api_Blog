@@ -24,18 +24,14 @@ class CommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'author' => 'required',
             'comment' => 'required|max:500',
-            'vote' => 'required'
         ];
     }
     
     public function messages()
     {
         return [
-            'author.required' => 'Comment Author is required',
             'comment.required' => 'Comment Content is required',
-            'vote.required'  => 'Comment Vote is required',
         ];
     }
 }
