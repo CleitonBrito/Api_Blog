@@ -18,6 +18,11 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\Contracts\PostRepositoryInterface', 
             'App\Repositories\Eloquent\PostRepository', 
         );
+
+        $this->app->bind(
+            'App\Repositories\Contracts\CommentRepositoryInterface', 
+            'App\Repositories\Eloquent\CommentRepository', 
+        );
     }
 
     /**
