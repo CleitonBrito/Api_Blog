@@ -32,7 +32,6 @@ class CommentFactory extends Factory
                 }
             },
             'comment' => fake()->sentence,
-            'vote' => fake()->numberBetween(0,1)
         ];
     }
 }
