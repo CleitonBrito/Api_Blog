@@ -14,6 +14,21 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
 
     protected $model = Comment::class;
 
+    public function get_count_votes_comment($comment_id){
+        try{
+            $comment_votes = $this->model->find($comment_id)->users_comments_votes;
+            $count = 0;
+            if($comment_votes){
+                foreach($comment_votes as $votes){
+                    $count += intval($votes->vote);
+                }
+            }
+            return ['comment_id' => $comment_id, 'total_votes' => $count];
+        }catch(\Exception $e){
+            throw new NotUserComment;
+        }
+    }
+
     public function get_user_comment_votes($comment_id){
         $output = $this->model->find($comment_id);
         if($output){

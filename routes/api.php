@@ -14,6 +14,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api\v1', 'middleware' => 'apiJwt
         '/comments' => CommentController::class
     ]);
 
+    Route::get('comments/{comment}/getCountVotes', 'CommentController@get_count_votes_comment');
     Route::post('comments/{comment}/addOneVote', 'CommentController@addOneVote');
     Route::post('comments/{comment}/subtractOneVote', 'CommentController@subtractOneVote');
 });

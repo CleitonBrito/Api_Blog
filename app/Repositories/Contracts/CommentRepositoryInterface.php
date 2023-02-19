@@ -5,6 +5,7 @@ namespace App\Repositories\Contracts;
 interface CommentRepositoryInterface {
 
     public function findAllCommentsBlongsToPost($post_id);
+    public function get_count_votes_comment($comment_id);
     public function get_user_comment_votes($comment_id);
     public function addOneVote($comment_id);
     public function subtractOneVote($comment_id);

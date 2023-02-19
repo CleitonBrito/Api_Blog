@@ -26,6 +26,10 @@ class CommentController extends Controller
         return response()->json($output);
     }
 
+    public function get_count_votes_comment(CommentRepositoryInterface $model, $comment_id){
+        return response()->json($model->get_count_votes_comment($comment_id));
+    }
+
     public function addOneVote(CommentRepositoryInterface $model, $comment_id){
         return response()->json($model->addOneVote($comment_id));
     }
