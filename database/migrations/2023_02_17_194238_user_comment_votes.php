@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('comment_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
-            $table->boolean('has_voted');
+            $table->enum('vote', ['-1' , '0', '1']);
             $table->timestamps();
 
             $table->foreign('comment_id')
