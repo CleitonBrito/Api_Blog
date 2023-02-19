@@ -41,17 +41,17 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
                 if($votes->vote == "-1"){
                     $votes->vote = "1";
                     if ($votes->save())
-                        return "Voto adicionado";
+                        return "Like vote added";
                 }
                 else if ($votes->vote == "0"){
                     $votes->vote = "1";
                     if ($votes->save())
-                        return "Voto adicionado";
+                        return "Like vote added";
                 }
                 else if ($votes->vote == "1"){
                     $votes->vote = "0";
                     if ($votes->save())
-                        return "Voto removido";
+                        return "Like vote removed";
                 }
             }
         }catch(\Exception $e){
@@ -63,7 +63,7 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
                         'user_id' => Auth::id(),
                         'vote' => "1"
                     ]);
-                    return "Voto adicionado";
+                    return "Like vote added";
                 }catch(\Exception $e){
                     return ['error_code' => $e->getCode()];
                 }
@@ -73,23 +73,47 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
         }
     }
 
-    public function subtractOneVote($id){
+    public function subtractOneVote($comment_id){
         try{
-            $comment = $this->model->findOrFail($id);
+            $votes = $this->get_user_comment_votes($comment_id)->users_comments_votes[0];
 
-            if($comment->author_id == Auth::id()){
-                throw new UserIsOwnerFromComment;
+            if($votes){
+                if($votes->author_id == Auth::id()){
+                    throw new UserCannotVoteInYourComment;
+                }
+
+                if($votes->vote == "-1"){
+                    $votes->vote = "0";
+                    if ($votes->save())
+                        return "No Like vote removed";
+                }
+                else if ($votes->vote == "0"){
+                    $votes->vote = "-1";
+                    if ($votes->save())
+                        return "No Like vote added";
+                }
+                else if ($votes->vote == "1"){
+                    $votes->vote = "-1";
+                    if ($votes->save())
+                        return "No Like vote added";
+                }
             }
-
-            $comment
-                ->where('id', $comment->id)
-                ->update([
-                    'vote' => $comment->vote - 1
-            ]);
-            return "vote successfully subtracted!";
-
-        }catch(\PDOException $e){
-            return ['error_code' => $e->getCode()];
+        }catch(\Exception $e){
+            $comment = $this->model->find($comment_id);
+            if($comment){
+                try{
+                    UserCommentsVotes::create([
+                        'comment_id' => $comment_id,
+                        'user_id' => Auth::id(),
+                        'vote' => "-1"
+                    ]);
+                    return "No Like vote added";
+                }catch(\Exception $e){
+                    return ['error_code' => $e->getCode()];
+                }
+            }else{
+                throw new NotUserComment;
+            }
         }
     }
 
