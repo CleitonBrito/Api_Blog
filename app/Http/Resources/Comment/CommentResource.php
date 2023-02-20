@@ -16,12 +16,12 @@ class CommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'author' => $this->author,
+            'post_id' => $this->post_id,
+            'author_id' => $this->author_id,
             'comment' => $this->comment,
-            'vote' => $this->vote,
+            'votes' => $this->votes,
             'links' => [
                 'post' => route( 'posts.show', $this->post_id ),
-                'comment' => route( 'comments.show', [ $this->post_id, $this->id ] )
             ]
         ];
     }

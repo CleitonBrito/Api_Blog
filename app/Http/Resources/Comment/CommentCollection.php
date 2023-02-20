@@ -18,12 +18,13 @@ class CommentCollection extends ResourceCollection
         foreach ($this->resource as $comment) {
             $comments[] = [
                 'id' => $comment->id,
-                'author' => $comment->author,
+                'post_id' => $comment->post_id,
+                'author_id' => $comment->author_id,
                 'comment' => $comment->comment,
-                'vote' => $comment->vote,
+                'votes' => $comment->votes,
                 'links' => [
                     'post' => route( 'posts.show', $comment->post_id ),
-                    'comment' => route( 'comments.show', [ $comment->post_id, $comment->id ] )
+                    'comment' => route( 'comments.show', $comment->id )
                 ]
             ];
         }
