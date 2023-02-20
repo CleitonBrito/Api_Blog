@@ -29,6 +29,16 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
         }
     }
 
+    public function get($id){
+        if($id !== null){
+            $output = parent::get($id);
+            if(!isset($output['error_code'])){
+                $output['votes'] = $this->get_count_votes_comment($output['id'])['total_votes'];
+            }
+            return $output;
+        }
+    }
+
     public function get_user_comment_votes($comment_id){
         $output = $this->model->find($comment_id);
         if($output){
@@ -38,9 +48,13 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
     }
 
     public function findAllCommentsBlongsToPost($post_id){
-        if($post_id !== null)
-            return DB::select('select * from comments where post_id = ?', [$post_id]);
-        else
+        if($post_id !== null){
+            $comments = DB::select('select * from comments where post_id = ?', [$post_id]);
+            foreach($comments as $comment){
+                $comment->votes = $this->get_count_votes_comment($comment->id)['total_votes'];
+            }
+            return $comments;
+        }else
             return ['error' => 'Param post_id not found in request.'];
     }
 
