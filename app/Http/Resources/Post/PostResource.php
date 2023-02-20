@@ -17,15 +17,12 @@ class PostResource extends JsonResource
         // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'user' => $this->user_id,
+            'user_id' => $this->user_id,
             'title' => $this->title,
             'slug' => $this->slug,
             'content' => $this->content,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'links' => [
-                'comments' => route('comments.index', $this->id )
-            ]
         ];
     }
 }

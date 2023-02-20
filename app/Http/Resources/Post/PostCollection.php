@@ -18,7 +18,7 @@ class PostCollection extends ResourceCollection
         foreach ( $this->resource as $post ) {
             $posts[] = [
                 'id' => $post->id,
-                'user' => $post->user_id,
+                'user_id' => $post->user_id,
                 'title' => $post->title,
                 'slug' => $post->slug,
                 'content' => $post->content,
