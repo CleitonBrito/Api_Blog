@@ -16,14 +16,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
 {
-
     public function __construct(){
         return $this->middleware('apiJwt');
     }
 
     public function index(CommentRepositoryInterface $model, Request $request){
-        $output = $model->findAllCommentsBlongsToPost($request->post_id);
-        return response()->json($output);
+        $outputs = $model->findAllCommentsBlongsToPost($request->post_id);
+        return response()->json(new CommentCollection($outputs));
     }
 
     public function get_count_votes_comment(CommentRepositoryInterface $model, $comment_id){
@@ -52,7 +51,7 @@ class CommentController extends Controller
     
     public function show(CommentRepositoryInterface $model, $comment_id){
         $output = $model->get($comment_id);
-        return response()->json($output);
+        return response()->json(new CommentResource($output));
     }
 
     public function update(CommentRepositoryInterface $model, Request $request, $comment_id){
