@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -14,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('apiJwt', ['except' => ['login']]);
+        $this->middleware('apiJwt', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -31,6 +34,31 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function register(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|confirmed|min:6'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        $user = User::create(array_merge(
+            $validator->validated(),
+            ['password' => Hash::make($request->password)]
+        ));
+
+        return response()->json([
+            'message' => "User successfully registered",
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email
+            ]
+        ], 201);
     }
 
     /**
