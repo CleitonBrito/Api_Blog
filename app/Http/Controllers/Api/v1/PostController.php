@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\Post\PostCollection;
+use App\Http\Resources\Comment\CommentCollection;
 use App\Repositories\Contracts\PostRepositoryInterface;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +45,12 @@ class PostController extends Controller
         $output = $model->get($id);
         if(isset($output['error_code'])) return response()->json($output)->setStatusCode(404);
         return response()->json(new PostResource($output));
+    }
+
+    public function commentsPost(PostRepositoryInterface $model, $id){
+        $output = $model->PostComments($id);
+        if(isset($output['error_code'])) return response()->json($output)->setStatusCode(404);
+        return response()->json(new CommentCollection($output));
     }
 
     public function update(PostRepositoryInterface $model, Request $request, $id)

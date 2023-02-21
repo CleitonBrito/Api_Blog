@@ -3,8 +3,10 @@
 namespace App\Repositories\Eloquent;
 use Auth;
 use App\Models\Post;
+use App\Models\UserCommentsVotes;
 use App\Exceptions\NotUserPost;
 use App\Repositories\Contracts\PostRepositoryInterface;
+use App\Repositories\Eloquent\CommentRepository;
 
 class PostRepository extends BaseRepository implements PostRepositoryInterface {
 
@@ -15,7 +17,25 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface {
     }
 
     public function PostComments($id){
-        $output = $this->model->find($id);
+        try{
+            $comments = $this->model->find($id)->comments;
+            if($comments){
+                foreach($comments as $comment){
+                    $comment_votes = UserCommentsVotes::where('comment_id', $comment->id)->get();
+                    if($comment_votes){
+                        $count = 0;
+                        foreach($comment_votes as $votes){
+                            $count += intval($votes->vote);
+                        }
+                    }
+                    $comment->votes = $count;
+                }
+                return $comments;
+            }
+            throw new NotUserPost;
+        }catch(\Exception $e){
+            return ['error_code' => $e->getMessage()];
+        }
     }
 
     public function isUserPost($post){
