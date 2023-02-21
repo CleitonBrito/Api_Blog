@@ -20,8 +20,8 @@ class CommentController extends Controller
         return $this->middleware('apiJwt');
     }
 
-    public function index(CommentRepositoryInterface $model, Request $request){
-        $outputs = $model->findAllCommentsBlongsToPost($request->post_id);
+    public function index(CommentRepositoryInterface $model){
+        $outputs = $model->all();
         return response()->json(new CommentCollection($outputs));
     }
 

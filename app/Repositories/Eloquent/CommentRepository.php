@@ -29,6 +29,14 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
         }
     }
 
+    public function all(){
+        $comments = $this->model->all();
+        foreach($comments as $comment){
+                $comment->votes = $this->get_count_votes_comment($comment->id)['total_votes'];
+            }
+        return $comments;
+    }
+
     public function get($id){
         if($id !== null){
             $output = parent::get($id);
