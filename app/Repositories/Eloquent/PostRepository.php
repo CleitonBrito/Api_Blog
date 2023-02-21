@@ -14,6 +14,10 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface {
         return $this->model->all();
     }
 
+    public function PostComments($id){
+        $output = $this->model->find($id);
+    }
+
     public function isUserPost($post){
         if(isset($post->user_id)){
             if(Auth::id() == $post->user_id){
