@@ -51,6 +51,7 @@ class CommentController extends Controller
     
     public function show(CommentRepositoryInterface $model, $comment_id){
         $output = $model->get($comment_id);
+        if(isset($output['error_code'])) return response()->json($output)->setStatusCode(404);
         return response()->json(new CommentResource($output));
     }
 
