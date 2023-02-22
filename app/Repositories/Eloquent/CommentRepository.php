@@ -67,91 +67,108 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
     }
 
     public function addOneVote($comment_id){
-        try{
-            $votes = $this->get_user_comment_votes($comment_id)->users_comments_votes[0];
+        $comment = $this->get_user_comment_votes($comment_id);
+        if($comment){
+            if($comment->author_id == Auth::id()){
+                throw new UserCannotVoteInYourComment;
+            }
 
-            if($votes){
-                if($votes->author_id == Auth::id()){
-                    throw new UserCannotVoteInYourComment;
+            $comment_user_vote = null;
+            foreach($comment->users_comments_votes as $comment_user){
+                if($comment_user->user_id == Auth::id()){
+                    $comment_user_vote = $comment_user;
+                    break;
                 }
-
-                if($votes->vote == "-1"){
-                    $votes->vote = "1";
-                    if ($votes->save())
+            }
+            
+            if($comment_user_vote){
+                if($comment_user_vote->vote == "-1"){
+                    $comment_user_vote->vote = "1";
+                    if ($comment_user_vote->save())
                         return "Like vote added";
                 }
-                else if ($votes->vote == "0"){
-                    $votes->vote = "1";
-                    if ($votes->save())
+                else if ($comment_user_vote->vote == "0"){
+                    $comment_user_vote->vote = "1";
+                    if ($comment_user_vote->save())
                         return "Like vote added";
                 }
-                else if ($votes->vote == "1"){
-                    $votes->vote = "0";
-                    if ($votes->save())
+                else if ($comment_user_vote->vote == "1"){
+                    $comment_user_vote->vote = "0";
+                    if ($comment_user_vote->save())
                         return "Like vote removed";
                 }
-            }
-        }catch(\Exception $e){
-            $comment = $this->model->find($comment_id);
-            if($comment){
-                try{
-                    UserCommentsVotes::create([
-                        'comment_id' => $comment_id,
-                        'user_id' => Auth::id(),
-                        'vote' => "1"
-                    ]);
-                    return "Like vote added";
-                }catch(\Exception $e){
-                    return ['error_code' => $e->getCode()];
-                }
             }else{
-                throw new NotUserComment;
+                $comment = $this->model->find($comment_id);
+                if($comment){
+                    try{
+                        UserCommentsVotes::create([
+                            'comment_id' => $comment_id,
+                            'user_id' => Auth::id(),
+                            'vote' => "1"
+                        ]);
+                        return "Like vote added";
+                    }catch(\Exception $e){
+                        return ['error_code' => $e->getCode()];
+                    }
+                }else{
+                    throw new NotUserComment;
+                }
+
             }
         }
+        throw new NotUserComment;
     }
 
     public function subtractOneVote($comment_id){
-        try{
-            $votes = $this->get_user_comment_votes($comment_id)->users_comments_votes[0];
+        $comment = $this->get_user_comment_votes($comment_id);
+        if($comment){
+            if($comment->author_id == Auth::id()){
+                throw new UserCannotVoteInYourComment;
+            }
 
-            if($votes){
-                if($votes->author_id == Auth::id()){
-                    throw new UserCannotVoteInYourComment;
-                }
-
-                if($votes->vote == "-1"){
-                    $votes->vote = "0";
-                    if ($votes->save())
-                        return "No Like vote removed";
-                }
-                else if ($votes->vote == "0"){
-                    $votes->vote = "-1";
-                    if ($votes->save())
-                        return "No Like vote added";
-                }
-                else if ($votes->vote == "1"){
-                    $votes->vote = "-1";
-                    if ($votes->save())
-                        return "No Like vote added";
+            $comment_user_vote = null;
+            foreach($comment->users_comments_votes as $comment_user){
+                if($comment_user->user_id == Auth::id()){
+                    $comment_user_vote = $comment_user;
+                    break;
                 }
             }
-        }catch(\Exception $e){
-            $comment = $this->model->find($comment_id);
-            if($comment){
-                try{
-                    UserCommentsVotes::create([
-                        'comment_id' => $comment_id,
-                        'user_id' => Auth::id(),
-                        'vote' => "-1"
-                    ]);
-                    return "No Like vote added";
-                }catch(\Exception $e){
-                    return ['error_code' => $e->getCode()];
+            
+            if($comment_user_vote){
+                if($comment_user_vote->vote == "-1"){
+                    $comment_user_vote->vote = "0";
+                    if ($comment_user_vote->save())
+                        return "Do not like vote removed";
+                }
+                else if ($comment_user_vote->vote == "0"){
+                    $comment_user_vote->vote = "-1";
+                    if ($comment_user_vote->save())
+                        return "Do not like vote added";
+                }
+                else if ($comment_user_vote->vote == "1"){
+                    $comment_user_vote->vote = "-1";
+                    if ($comment_user_vote->save())
+                        return "Do not like vote added";
                 }
             }else{
-                throw new NotUserComment;
+                $comment = $this->model->find($comment_id);
+                if($comment){
+                    try{
+                        UserCommentsVotes::create([
+                            'comment_id' => $comment_id,
+                            'user_id' => Auth::id(),
+                            'vote' => "-1"
+                        ]);
+                        return "Do not like vote added";
+                    }catch(\Exception $e){
+                        return ['error_code' => $e->getCode()];
+                    }
+                }else{
+                    throw new NotUserComment;
+                }
             }
         }
+        throw new NotUserComment;
     }
 
     public function isUserComment($comment){
